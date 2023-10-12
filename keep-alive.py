@@ -1,5 +1,6 @@
 import requests
 import base64
+import json
 
 # Define the base URL for your Genelec API
 base_url = "http://192.168.0.79:9000/public/v1"
@@ -9,6 +10,7 @@ headers = {
     "Accept": "application/json",
     "Authorization": "Basic " + base64.b64encode(b"admin:admin").decode(),
     "Connection": "keep-alive",
+    "Content-Length": "0"
 }
 
 # Define a session to manage the connection
@@ -19,11 +21,14 @@ response = session.get(f"{base_url}/device/info", headers=headers)
 print("Response from GET request:", response.text)
 
 # Example 2: Send a PUT request to change the volume
-volume_data = {
+message_body = {
     "level": -15.0,
     "mute": False
 }
-response = session.put(f"{base_url}/audio/volume", json=volume_data, headers=headers)
+
+message_length = len(json.dumps(message_body).encode("utf-8"))
+headers["Content-Length"] = message_length
+response = session.put(f"{base_url}/audio/volume", json=message_body, headers=headers)
 print("Response from PUT request:", response.text)
 
 # Example 3: Send another GET request
