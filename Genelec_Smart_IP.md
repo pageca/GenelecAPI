@@ -62,7 +62,7 @@ The header starts with the request line having the format:
 method /public/<version>/path HTTP/1.1\r\n
 
 
-Then, the list of request header fields follows (Table 2) and finally an empty line.
+Then, the list of request header fields follows (Table below) and finally an empty line.
 
 #### Body
 
