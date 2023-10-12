@@ -28,7 +28,7 @@ Headers should be sent as JSON key-value pairs.
   "Accept": "application/json",
   "Authorization": "Basic YWRtaW46YWRtaW4=",
   "Content-Type": "application/json",
-  "Content-Length" 
+  "Content-Length": "0"
   "Connection": "keep-alive"
 }
 ```

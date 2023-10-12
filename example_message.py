@@ -19,11 +19,10 @@ headers = {
     "Host": "192.168.0.79:9000",
     "Accept": "application/json",
     "Connection": "close", #keep-open is default
-    "Authorization": "Basic " + base64.b64encode(b"admin:admin").decode(),
+    "Authorization": base64.b64encode(b"admin:admin").decode(),
     "Content-Length": str(message_length)
 }
 
-print(len(json.dumps(message_body)))
 
 request = requests.Request("PUT", api_url, headers=headers, json=message_body)
 prepared_request = request.prepare()
@@ -36,9 +35,9 @@ print("\n".join(f"{k}: {v}" for k, v in prepared_request.headers.items()))
 print("\n" + prepared_request.body.decode('utf-8'))
 
 # Check the response
-""" response = requests.put(api_url, headers=headers, json=message_body)
+response = requests.put(api_url, headers=headers, json=message_body)
 
 if response.status_code == 200:
     print("Request was successful.")
 else:
-    print(f"Request failed with status code {response.status_code}: {response.text}") """
+    print(f"Request failed with status code {response.status_code}: {response.text}")

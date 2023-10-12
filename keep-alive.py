@@ -8,7 +8,7 @@ base_url = "http://192.168.0.79:9000/public/v1"
 # Prepare the headers with authorization and keep-alive
 headers = {
     "Accept": "application/json",
-    "Authorization": "Basic " + base64.b64encode(b"admin:admin").decode(),
+    "Authorization": base64.b64encode(b"admin:admin").decode(),
     "Connection": "keep-alive",
     "Content-Length": "0"
 }
@@ -27,6 +27,8 @@ message_body = {
 }
 
 message_length = len(json.dumps(message_body).encode("utf-8"))
+
+# set message length to messsage body size
 headers["Content-Length"] = message_length
 response = session.put(f"{base_url}/audio/volume", json=message_body, headers=headers)
 print("Response from PUT request:", response.text)

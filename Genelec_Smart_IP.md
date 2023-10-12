@@ -110,13 +110,13 @@ The API version can be read by sending a request to `GET {ip}:{port}/device/info
 - **Method:** `PUT`
 - **Media Type:** `application/json`
 
-**Properties:**
-- `input: required (array of )`
-  - A: analog input connector
-  - AoIP01: AoIP input channel 1
-  - AoIP02: AoIP input channel 2
+    **Properties:**
+    - `input: required (array of )`
+      - A: analog input connector
+      - AoIP01: AoIP input channel 1
+      - AoIP02: AoIP input channel 2
 
-#### Set Loudspeaker Level and Mute
+### Set Loudspeaker Level and Mute
 
 - **URL:** `http://{ip}:{port}/public/v1/audio/volume`
 - **Method:** `PUT`
@@ -126,7 +126,7 @@ The API version can be read by sending a request to `GET {ip}:{port}/device/info
 - `level: (number - minimum: -200 - maximum: 0)` Volume level in 0.1 dB resolution.
 - `mute: (boolean)` Mute audio
 
-#### Get Loudspeaker Level and Mute State
+### Get Loudspeaker Level and Mute State
 
 - **URL:** `http://{ip}:{port}/public/v1/audio/volume`
 - **Method:** `GET`
@@ -138,7 +138,7 @@ The API version can be read by sending a request to `GET {ip}:{port}/device/info
 
 ### /device
 
-#### Get Device Information
+### Get Device Information
 
 - **URL:** `http://{ip}:{port}/public/v1/device/id`
 - **Method:** `GET`
@@ -151,7 +151,7 @@ The API version can be read by sending a request to `GET {ip}:{port}/device/info
 - `model: required (string - maxLength: 32)` Device model name.
 - `modId: required (string - maxLength: 32)` Model specific configuration.
 
-#### Get API Version, Model Name, and Version Information
+### Get API Version, Model Name, and Version Information
 
 - **URL:** `http://{ip}:{port}/public/v1/device/info`
 - **Method:** `GET`
@@ -169,7 +169,7 @@ The API version can be read by sending a request to `GET {ip}:{port}/device/info
 - `apiVer: (string)` API version.
 - `confirmFwUpdate: (boolean)` New firmware is running and waiting for confirmation from the user.
 
-#### Switch Between Sleep and Active State
+### Switch Between Sleep and Active State
 
 - **URL:** `http://{ip}:{port}/public/v1/device/pwr`
 - **Method:** `PUT`
@@ -178,7 +178,7 @@ The API version can be read by sending a request to `GET {ip}:{port}/device/info
 **Properties:**
 - `state: (one of STANDBY, ACTIVE, BOOT, AOIPBOOT)`
 
-#### Get Power State
+### Get Power State
 
 - **URL:** `http://{ip}:{port}/public/v1/device/pwr`
 - **Method:** `GET`
