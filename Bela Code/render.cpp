@@ -18,7 +18,7 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* use
 
 // OSC to API Wrapper
 void on_receive(oscpkt::Message* msg, void*) {
-    oscpkt::Message::ArgReader arg(msg->arg());
+    oscpkt::Message::<Arg>Reader arg(msg->arg());
     std::string url;
     std::string body_json;
     struct curl_slist* headers = NULL;
@@ -84,7 +84,6 @@ bool setup(BelaContext *context, void *userData) {
 }
 
 void render(BelaContext *context, void *userData) {
-    // Your rendering logic goes here (currently empty)
 }
 
 void cleanup(BelaContext *context, void *userData) {
