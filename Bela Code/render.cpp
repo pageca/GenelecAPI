@@ -3,10 +3,14 @@
 #include <iostream>
 #include <cstring>
 #include <libraries/OscReceiver/OscReceiver.h>
+#include <libraries/OscSender/OscSender.h>
 
 OscReceiver oscReceiver;
-int localPort = 7562;
-const char* remoteIp = "192.168.178.56";
+OscSender oscSender;
+int localPort = 7560;
+int remotePort = 7562;
+const char* remoteIp = "192.168.2.102";
+std::string ip;
 
 // Callback function to write response data
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
@@ -16,9 +20,21 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* use
     return totalSize;
 }
 
-// OSC to API Wrapper
+// Function to send an HTTP request when receiving an OSC message
 void on_receive(oscpkt::Message* msg, void*) {
-    oscpkt::Message::<Arg>Reader arg(msg->arg());
+	//Set Remote Address
+	oscpkt::Message::ArgReader arg(msg->arg());
+	
+	if(msg->match("/address")) {
+		if (arg.isStr()) {
+			arg.popStr(ip);
+			remoteIp = ip.c_str();
+		}
+		if (arg.isInt32()) {
+			arg.popInt32(remotePort);
+		}
+	}
+	
     std::string url;
     std::string body_json;
     struct curl_slist* headers = NULL;
@@ -47,8 +63,9 @@ void on_receive(oscpkt::Message* msg, void*) {
         if (msg->match("/put")) {
             curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
             if (!body_json.empty()) {
-                curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_json.c_str());
-                curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, body_json.c_str().size());
+            	const char* body_char = body_json.c_str();
+                curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body_char);
+                curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, std::strlen(body_char));
             }
         } else if (msg->match("/get")) {
             curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
@@ -59,19 +76,20 @@ void on_receive(oscpkt::Message* msg, void*) {
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
         CURLcode res = curl_easy_perform(curl);
+        // Set the write callback function to handle response data
 
         if (res == CURLE_OK) {
             long response_code;
             curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
             if (response_code == 200) {
                 std::cout << "Request was successful." << std::endl;
+                oscSender.newMessage("/osc-setup").add(response).send();
             } else {
                 std::cout << "Request failed with status code " << response_code << ": " << response << std::endl;
             }
         } else {
             std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
         }
-
         curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
     }
@@ -79,13 +97,18 @@ void on_receive(oscpkt::Message* msg, void*) {
 
 bool setup(BelaContext *context, void *userData) {
     oscReceiver.setup(localPort, on_receive);
+    oscSender.setup(remotePort, remoteIp);
     curl_global_init(CURL_GLOBAL_ALL);
     return true;
 }
 
 void render(BelaContext *context, void *userData) {
+    // Your rendering logic goes here (currently empty)
 }
 
 void cleanup(BelaContext *context, void *userData) {
     curl_global_cleanup();
 }
+
+
+
