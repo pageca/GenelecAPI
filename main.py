@@ -9,7 +9,7 @@ import re
 
 speakers = {}
 
-def send_command(ip, endpoint, method="GET", data=None):
+def send_command(ip, endpoint, method="GET", message=None):
     url = f"http://{ip}:9000/public/v1/{endpoint}"
     headers = {
         "Accept": "application/json",
@@ -22,7 +22,7 @@ def send_command(ip, endpoint, method="GET", data=None):
             response = requests.get(url, headers=headers)
         elif method == "PUT":
             headers["Content-Type"] = "application/json"
-            response = requests.put(url, headers=headers, data=json.dumps(data))
+            response = requests.put(url, headers=headers, json=json.dumps(message))
         else:
             print(f"Unsupported HTTP method: {method}")
             return
@@ -57,10 +57,10 @@ def scan_network(sender_ip, sender_port, *args):
     # Send scan results back to the sender via OSC
     client.send_message("/scan_results", [json.dumps(speakers)])
 
-def osc_to_http(sender_ip, sender_port, *args):
-    ip, option, value = args
+def osc_to_http(*args):
+    ip, option, message = args
 
-    return send_command(ip, option, "PUT", {"value": value})
+    return send_command(ip, option, "PUT", message)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="OSC to HTTP Wrapper")
